@@ -1,0 +1,2 @@
+"""Factorio server manager package."""
+
