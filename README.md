@@ -1,4 +1,4 @@
-# Factorio 2.0.77 / 2.1.14 自适配开服工具
+# Factorio 2.0.77 / 2.1.14 开服工具
 
 Windows 图形化专用服务器管理器，同时支持：
 
@@ -7,7 +7,7 @@ Windows 图形化专用服务器管理器，同时支持：
 
 ## 使用
 
-1. 双击 `start-server-manager.cmd`。
+1. 双击 `FactorioServerManager`。
 2. 选择服务器存档、模组目录并填写服务器设置。
 3. 使用内网穿透时关闭“局域网内可发现”，隧道协议选择 UDP。
 4. 点击“启动服务器”。
@@ -18,7 +18,7 @@ Windows 图形化专用服务器管理器，同时支持：
 服务端写入数据保存在本项目的 `runtime` 目录，不会与图形客户端争用
 `%APPDATA%\Factorio\.lock`。
 
-## 跨电脑自动检测
+## 自动检测
 
 首次启动且没有 `profile.json` 时，工具会检查 Steam 注册表、Steam 主库、
 `libraryfolders.vdf` 中的其他 Steam 库，以及常见独立安装位置，并只采用版本
