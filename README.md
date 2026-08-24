@@ -1,9 +1,10 @@
-# Factorio 2.0.77 / 2.1.14 开服工具
+# Factorio 2.0.77 / 2.1.14 / 2.1.16 开服工具
 
 Windows 图形化专用服务器管理器，同时支持：
 
 - Factorio 2.0.77 正式版（build 84539）
 - Factorio 2.1.14 测试版（build 87180）
+- Factorio 2.1.16 测试版（build 87294）
 
 ## 使用
 
@@ -22,8 +23,8 @@ Windows 图形化专用服务器管理器，同时支持：
 
 首次启动且没有 `profile.json` 时，工具会检查 Steam 注册表、Steam 主库、
 `libraryfolders.vdf` 中的其他 Steam 库，以及常见独立安装位置，并只采用版本
-确实为 2.0.77 或 2.1.14 的 `factorio.exe`。发现多个受支持版本时自动检测优先
-选择 2.1.14，用户可通过“浏览”改选 2.0.77。存档与模组目录使用当前用户的：
+确实为 2.0.77、2.1.14 或 2.1.16 的 `factorio.exe`。发现多个受支持版本时自动
+检测优先选择 2.1.16，用户可通过“浏览”改选其他受支持版本。存档与模组目录使用当前用户的：
 
 - 存档：`%APPDATA%\Factorio\saves`
 - 模组：`%APPDATA%\Factorio\mods`

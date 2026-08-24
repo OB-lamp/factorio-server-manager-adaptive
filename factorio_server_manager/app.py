@@ -44,8 +44,8 @@ from .shortcuts import (
 )
 
 
-SUPPORTED_FACTORIO_VERSIONS = ("2.0.77", "2.1.14")
-APP_TITLE = "Factorio 2.0.77 / 2.1.14 自适配开服工具"
+SUPPORTED_FACTORIO_VERSIONS = ("2.0.77", "2.1.14", "2.1.16")
+APP_TITLE = "Factorio 2.0.77 / 2.1.14 / 2.1.16 自适配开服工具"
 PROJECT_ROOT = (
     Path(sys.executable).resolve().parent
     if getattr(sys, "frozen", False)
@@ -212,7 +212,7 @@ class ServerManagerApp:
         ttk.Label(header, text=APP_TITLE, style="Title.TLabel").pack(anchor="w")
         ttk.Label(
             header,
-            text="自动识别 Factorio 2.0.77 正式版或 2.1.14 测试版 · 独立数据目录、RCON、快捷指令与实时控制台",
+            text="自动识别 Factorio 2.0.77、2.1.14 或 2.1.16 · 独立数据目录、RCON、快捷指令与实时控制台",
             style="Subtitle.TLabel",
         ).pack(anchor="w", pady=(2, 12))
 
@@ -1108,7 +1108,7 @@ class ServerManagerApp:
             details = "\n".join(str(path) for path in found) or "未找到任何 Factorio 安装"
             messagebox.showerror(
                 APP_TITLE,
-                "没有找到支持的 Factorio 2.0.77 或 2.1.14。\n\n"
+                f"没有找到支持的 Factorio {'、'.join(SUPPORTED_FACTORIO_VERSIONS)}。\n\n"
                 f"已检查 Steam 主库、其他 Steam 库和常见安装位置。\n\n{details}",
                 parent=self.root,
             )
