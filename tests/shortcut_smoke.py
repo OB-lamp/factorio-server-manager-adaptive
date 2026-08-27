@@ -32,7 +32,7 @@ def main() -> int:
         lan_visibility=False,
         require_user_verification=False,
     )
-    runtime = ROOT / ".shortcut-smoke-2.1.16"
+    runtime = ROOT / ".shortcut-smoke-2.1.17"
     files = write_runtime_files(runtime, profile, game_password="", factorio_token="")
     password = secrets.token_urlsafe(24)
     command = build_server_command(profile, files, rcon_password=password, rcon_bind_local=True)

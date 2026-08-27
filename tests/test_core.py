@@ -57,19 +57,25 @@ class ServerCoreTests(unittest.TestCase):
     @patch("factorio_server_manager.app.subprocess.run")
     def test_detect_factorio_version(self, run) -> None:
         run.return_value.returncode = 0
-        run.return_value.stdout = "Version: 2.1.16 (build 87294, win64, steam)\n"
-        self.assertEqual(detect_factorio_version("factorio.exe"), "2.1.16")
+        run.return_value.stdout = "Version: 2.1.17 (build 87315, win64, steam)\n"
+        self.assertEqual(detect_factorio_version("factorio.exe"), "2.1.17")
 
     @patch("factorio_server_manager.app.detect_factorio_version")
     @patch("factorio_server_manager.app.discover_factorio_executables")
     def test_adaptive_version_selection_honors_selected_executable(self, discover, detect) -> None:
         old = Path(r"C:\Factorio-2.0.77\factorio.exe")
         previous = Path(r"C:\Factorio-2.1.14\factorio.exe")
-        new = Path(r"C:\Factorio-2.1.16\factorio.exe")
-        discover.return_value = [old, previous, new]
-        versions = {str(old): "2.0.77", str(previous): "2.1.14", str(new): "2.1.16"}
+        recent = Path(r"C:\Factorio-2.1.16\factorio.exe")
+        new = Path(r"C:\Factorio-2.1.17\factorio.exe")
+        discover.return_value = [old, previous, recent, new]
+        versions = {
+            str(old): "2.0.77",
+            str(previous): "2.1.14",
+            str(recent): "2.1.16",
+            str(new): "2.1.17",
+        }
         detect.side_effect = versions.__getitem__
-        self.assertEqual(SUPPORTED_FACTORIO_VERSIONS, ("2.0.77", "2.1.14", "2.1.16"))
+        self.assertEqual(SUPPORTED_FACTORIO_VERSIONS, ("2.0.77", "2.1.14", "2.1.16", "2.1.17"))
         self.assertEqual(
             ServerManagerApp._find_supported_factorio(old),
             (old, "2.0.77"),
@@ -80,13 +86,19 @@ class ServerCoreTests(unittest.TestCase):
     def test_adaptive_auto_detection_prefers_newer_supported_version(self, discover, detect) -> None:
         old = Path(r"C:\Factorio-2.0.77\factorio.exe")
         previous = Path(r"C:\Factorio-2.1.14\factorio.exe")
-        new = Path(r"C:\Factorio-2.1.16\factorio.exe")
-        discover.return_value = [old, previous, new]
-        versions = {str(old): "2.0.77", str(previous): "2.1.14", str(new): "2.1.16"}
+        recent = Path(r"C:\Factorio-2.1.16\factorio.exe")
+        new = Path(r"C:\Factorio-2.1.17\factorio.exe")
+        discover.return_value = [old, previous, recent, new]
+        versions = {
+            str(old): "2.0.77",
+            str(previous): "2.1.14",
+            str(recent): "2.1.16",
+            str(new): "2.1.17",
+        }
         detect.side_effect = versions.__getitem__
         self.assertEqual(
             ServerManagerApp._find_supported_factorio(),
-            (new, "2.1.16"),
+            (new, "2.1.17"),
         )
 
     def test_public_server_requires_token(self) -> None:
