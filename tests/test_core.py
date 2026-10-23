@@ -13,6 +13,12 @@ from factorio_server_manager.app import (
     ServerManagerApp,
     detect_factorio_version,
 )
+from factorio_server_manager.edition import (
+    ADAPTIVE_FACTORIO_VERSIONS,
+    STABLE_EDITION_ENV,
+    STABLE_EDITION_VALUE,
+    resolve_edition,
+)
 from factorio_server_manager.achievement_flags import clear_achievement_flags
 from factorio_server_manager.shortcuts import (
     build_online_players_query,
@@ -57,8 +63,20 @@ class ServerCoreTests(unittest.TestCase):
     @patch("factorio_server_manager.app.subprocess.run")
     def test_detect_factorio_version(self, run) -> None:
         run.return_value.returncode = 0
-        run.return_value.stdout = "Version: 2.1.17 (build 87315, win64, steam)\n"
-        self.assertEqual(detect_factorio_version("factorio.exe"), "2.1.17")
+        run.return_value.stdout = "Version: 2.1.23 (build 00000, win64, steam)\n"
+        self.assertEqual(detect_factorio_version("factorio.exe"), "2.1.23")
+
+    def test_stable_edition_accepts_only_current_stable(self) -> None:
+        edition = resolve_edition({STABLE_EDITION_ENV: STABLE_EDITION_VALUE})
+        self.assertTrue(edition.stable_only)
+        self.assertEqual(edition.supported_versions, ("2.1.23",))
+        self.assertIn("2.1.23 稳定版", edition.title)
+
+    def test_adaptive_edition_includes_current_stable(self) -> None:
+        edition = resolve_edition({})
+        self.assertFalse(edition.stable_only)
+        self.assertEqual(edition.supported_versions, ADAPTIVE_FACTORIO_VERSIONS)
+        self.assertEqual(edition.supported_versions[-1], "2.1.23")
 
     @patch("factorio_server_manager.app.detect_factorio_version")
     @patch("factorio_server_manager.app.discover_factorio_executables")
@@ -67,15 +85,20 @@ class ServerCoreTests(unittest.TestCase):
         previous = Path(r"C:\Factorio-2.1.14\factorio.exe")
         recent = Path(r"C:\Factorio-2.1.16\factorio.exe")
         new = Path(r"C:\Factorio-2.1.17\factorio.exe")
-        discover.return_value = [old, previous, recent, new]
+        stable = Path(r"C:\Factorio-2.1.23\factorio.exe")
+        discover.return_value = [old, previous, recent, new, stable]
         versions = {
             str(old): "2.0.77",
             str(previous): "2.1.14",
             str(recent): "2.1.16",
             str(new): "2.1.17",
+            str(stable): "2.1.23",
         }
         detect.side_effect = versions.__getitem__
-        self.assertEqual(SUPPORTED_FACTORIO_VERSIONS, ("2.0.77", "2.1.14", "2.1.16", "2.1.17"))
+        self.assertEqual(
+            SUPPORTED_FACTORIO_VERSIONS,
+            ("2.0.77", "2.1.14", "2.1.16", "2.1.17", "2.1.23"),
+        )
         self.assertEqual(
             ServerManagerApp._find_supported_factorio(old),
             (old, "2.0.77"),
@@ -88,17 +111,19 @@ class ServerCoreTests(unittest.TestCase):
         previous = Path(r"C:\Factorio-2.1.14\factorio.exe")
         recent = Path(r"C:\Factorio-2.1.16\factorio.exe")
         new = Path(r"C:\Factorio-2.1.17\factorio.exe")
-        discover.return_value = [old, previous, recent, new]
+        stable = Path(r"C:\Factorio-2.1.23\factorio.exe")
+        discover.return_value = [old, previous, recent, new, stable]
         versions = {
             str(old): "2.0.77",
             str(previous): "2.1.14",
             str(recent): "2.1.16",
             str(new): "2.1.17",
+            str(stable): "2.1.23",
         }
         detect.side_effect = versions.__getitem__
         self.assertEqual(
             ServerManagerApp._find_supported_factorio(),
-            (new, "2.1.17"),
+            (stable, "2.1.23"),
         )
 
     def test_public_server_requires_token(self) -> None:

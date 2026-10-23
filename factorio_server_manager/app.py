@@ -42,10 +42,13 @@ from .shortcuts import (
     checked_integer,
     parse_online_players,
 )
+from .edition import resolve_edition
 
 
-SUPPORTED_FACTORIO_VERSIONS = ("2.0.77", "2.1.14", "2.1.16", "2.1.17")
-APP_TITLE = "Factorio 2.0.77 / 2.1.14 / 2.1.16 / 2.1.17 自适配开服工具"
+EDITION = resolve_edition()
+SUPPORTED_FACTORIO_VERSIONS = EDITION.supported_versions
+APP_TITLE = EDITION.title
+APP_SUBTITLE = EDITION.subtitle
 PROJECT_ROOT = (
     Path(sys.executable).resolve().parent
     if getattr(sys, "frozen", False)
@@ -212,7 +215,7 @@ class ServerManagerApp:
         ttk.Label(header, text=APP_TITLE, style="Title.TLabel").pack(anchor="w")
         ttk.Label(
             header,
-            text="自动识别 Factorio 2.0.77、2.1.14、2.1.16 或 2.1.17 · 独立数据目录、RCON、快捷指令与实时控制台",
+            text=APP_SUBTITLE,
             style="Subtitle.TLabel",
         ).pack(anchor="w", pady=(2, 12))
 
